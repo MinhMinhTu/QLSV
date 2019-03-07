@@ -5,7 +5,7 @@ class NotFoundPage extends Component {
         return (
             <div className="container">
                 <div className="alert alert-danger">
-                    <strong>Không tìm thấy trang</strong>
+                    <strong>404 NOT FOUND :))</strong>
                 </div>
             </div>
         )

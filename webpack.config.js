@@ -1,17 +1,17 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-
+const webpack = require('webpack');
+const {alias} = require(path.resolve(__dirname,'src/assets/scripts/alias.js'))
 
 module.exports = {
-    entry: [
-        'webpack-dev-server/client?http://localhost:8080/',
-        //'webpack-hot-middleware/client',
-        './src/index.js'
-      ],
+    entry: './src/index.js',
     output: {
         path: path.resolve(__dirname, '/dist'),
         filename: 'index_bundle.js',
-        publicPath: '/'   ///react-router cho webpack chuyển hướng tất cả đến file index.html
+        publicPath: '/'   
+    },
+    resolve :{
+       alias : alias(path.resolve(__dirname))
     },
     module: {
         rules: [
@@ -20,41 +20,47 @@ module.exports = {
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
-                    options:{  
-                            "presets" : [
-                                "@babel/preset-env",
-                                "@babel/preset-react"
-                            ],
-                            "plugins": [  /// 2 plugin này cho phép chạy được arrow function trong webpack
-                                "@babel/plugin-syntax-dynamic-import",
-                                "@babel/plugin-proposal-class-properties"
-                            ]
+                    options: {
+                        "presets": [
+                            "@babel/preset-env",
+                            "@babel/preset-react"
+                        ],
+                        "plugins": [ 
+                            "@babel/plugin-syntax-dynamic-import",
+                            "@babel/plugin-proposal-class-properties"
+                        ]
                     }
                 }
             },
             {
-                test : /\.(sc|sa|c)ss$/,
-                use:[
-                    {
-                        loader: 'style-loader'
-                    },
-                    {
-                        loader: 'css-loader'
-                    },
-                    {
-                        loader: 'sass-loader'
-                    }
+                test: /\.css$/,
+                use: [
+                    'style-loader', 'css-loader'
                 ]
+            },
+            {
+                loader: 'file-loader',
+                test: /\.ipe?g $ | \.gif$ | \.png$ | \.svg$ | \.woff$ | \.woff2$ | \.eot$ | \.wav$ | \.ttf$| \.mp3$ /
             }
         ]
     },
-    plugins:[
-        new HtmlWebpackPlugin ({
-            template : './src/index.html'
+    plugins: [
+
+        new HtmlWebpackPlugin({
+            template: './src/index.html'
+        }),
+
+        new webpack.ProvidePlugin({
+            '$': 'jquery',
+            'jQuery': 'jquery',
+            'window.$': 'jquery',
+            'window.jQuery': 'jquery'
         })
+
     ],
     devServer: {
-        historyApiFallback: true, //react-router cho webpack chuyển hướng tất cả đến file index.html
-        }
+        historyApiFallback: true,
+        port:9000
+    }
 
 };
